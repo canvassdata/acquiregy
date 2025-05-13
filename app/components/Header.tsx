@@ -4,8 +4,12 @@ import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useEffect } from "react"
+import { usePathname } from "next/navigation"
 
 export default function Header() {
+  const pathname = usePathname()
+  const isHomePage = pathname === "/"
+
   useEffect(() => {
     const handleScroll = (e: Event) => {
       e.preventDefault()
@@ -17,17 +21,23 @@ export default function Header() {
       }
     }
 
-    const links = document.querySelectorAll('a[href^="#"]')
-    links.forEach((link) => {
-      link.addEventListener("click", handleScroll)
-    })
-
-    return () => {
+    // Only add smooth scrolling on the home page
+    if (isHomePage) {
+      const links = document.querySelectorAll('a[href^="#"]')
       links.forEach((link) => {
-        link.removeEventListener("click", handleScroll)
+        link.addEventListener("click", handleScroll)
       })
+
+      return () => {
+        links.forEach((link) => {
+          link.removeEventListener("click", handleScroll)
+        })
+      }
     }
-  }, [])
+  }, [isHomePage])
+
+  // Prefix for section links - use "/" for non-home pages to link back to home
+  const linkPrefix = isHomePage ? "" : "/"
 
   return (
     <header className="py-4 px-6 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 w-full border-b border-border/40">
@@ -42,13 +52,19 @@ export default function Header() {
           />
         </Link>
         <nav className="hidden md:flex space-x-6">
-          <Link href="#algorithm" className="text-muted-foreground hover:text-primary transition-colors">
+          <Link href={`${linkPrefix}#algorithm`} className="text-muted-foreground hover:text-primary transition-colors">
             What We Do
           </Link>
-          <Link href="#sales-process" className="text-muted-foreground hover:text-primary transition-colors">
+          <Link
+            href={`${linkPrefix}#sales-process`}
+            className="text-muted-foreground hover:text-primary transition-colors"
+          >
             Process
           </Link>
-          <Link href="#performance" className="text-muted-foreground hover:text-primary transition-colors">
+          <Link
+            href={`${linkPrefix}#performance`}
+            className="text-muted-foreground hover:text-primary transition-colors"
+          >
             Performance
           </Link>
         </nav>
