@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -60,8 +62,10 @@ export function AnalysisForm() {
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[500px] bg-white border shadow-lg relative z-50 max-h-[90vh] overflow-y-auto"
-  style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)", position: "fixed" }}>
+        <DialogContent
+          className="sm:max-w-[500px] bg-white border shadow-lg relative z-50 max-h-[90vh] overflow-y-auto"
+          style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)", position: "fixed" }}
+        >
           <DialogHeader>
             <DialogTitle className="text-2xl text-center bg-primary text-white py-4 -mx-6 -mt-6 rounded-t-lg">
               Let's Get Started
@@ -81,18 +85,18 @@ export function AnalysisForm() {
 
             <div className="space-y-2">
               <label className="text-sm font-medium">What are your Marketplace goals?*</label>
-<Select name="marketingGoals" required>
-  <SelectTrigger className="bg-white text-black border border-gray-300 shadow-md">
-    <SelectValue placeholder="Choose one.." />
-  </SelectTrigger>
-  <SelectContent className="bg-white text-black border border-gray-300 shadow-md">
-    {marketingGoals.map((goal) => (
-      <SelectItem key={goal} value={goal}>
-        {goal}
-      </SelectItem>
-    ))}
-  </SelectContent>
-</Select>
+              <Select name="marketingGoals" required>
+                <SelectTrigger className="bg-white text-black border border-gray-300 shadow-md">
+                  <SelectValue placeholder="Choose one.." />
+                </SelectTrigger>
+                <SelectContent className="bg-white text-black border border-gray-300 shadow-md">
+                  {marketingGoals.map((goal) => (
+                    <SelectItem key={goal} value={goal}>
+                      {goal}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
@@ -102,18 +106,20 @@ export function AnalysisForm() {
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Brand Category*</label>
-<Select name="category" required>
-  <SelectTrigger className="bg-white text-black border border-gray-300 shadow-md">
-    <SelectValue placeholder="Choose one.." />
-  </SelectTrigger>
-  <SelectContent className="bg-white text-black border border-gray-300 shadow-md">
-    {categories.map((category) => (
-      <SelectItem key={category} value={category}>
-        {category}
-      </SelectItem>
-    ))}
-  </SelectContent>
-</Select>
+              <Select name="category" required>
+                <SelectTrigger className="bg-white text-black border border-gray-300 shadow-md">
+                  <SelectValue placeholder="Choose one.." />
+                </SelectTrigger>
+                <SelectContent className="bg-white text-black border border-gray-300 shadow-md">
+                  {categories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             <Button type="submit" className="w-full bg-primary hover:bg-primary/90">
               Let's Go!
             </Button>
@@ -127,4 +133,3 @@ export function AnalysisForm() {
     </>
   )
 }
-

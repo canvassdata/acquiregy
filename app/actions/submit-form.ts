@@ -36,4 +36,3 @@ export async function submitAnalysisForm(formData: FormData) {
     throw new Error("Failed to submit form")
   }
 }
-

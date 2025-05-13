@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Acquiregy - Influencer Marketing for Marketplace Merchants",
   description:
     "Boost your marketplace listings with our micro-influencer network. Achieve up to 5X revenue growth in 60 days.",
+    generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -21,4 +22,3 @@ export default function RootLayout({
     </html>
   )
 }
-
