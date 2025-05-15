@@ -1,38 +1,24 @@
 "use server"
 
 export async function submitAnalysisForm(formData: FormData) {
-  const data = {
-    name: formData.get("name"),
-    email: formData.get("email"),
-    marketingGoals: formData.get("marketingGoals"),
-    services: formData.get("services"),
-    website: formData.get("website"),
-    category: formData.get("category"),
-  }
-
-  // Send email using your preferred email service
   try {
-    await fetch("https://api.your-email-service.com/send", {
+    const response = await fetch("https://formspree.io/f/xwpoarvl", {
       method: "POST",
+      body: formData,
       headers: {
-        "Content-Type": "application/json",
+        Accept: "application/json",
       },
-      body: JSON.stringify({
-        to: "hello@acquiregy.com",
-        subject: "New Analysis Request",
-        text: `
-          New request from ${data.name}
-          
-          Email: ${data.email}
-          Website: ${data.website}
-          Category: ${data.category}
-          Marketing Goals: ${data.marketingGoals}
-          Services Interest: ${data.services}
-        `,
-      }),
     })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error("Formspree submission error:", errorData)
+      throw new Error("Form submission failed")
+    }
+
+    return { success: true }
   } catch (error) {
-    console.error("Failed to send email:", error)
+    console.error("Failed to submit form:", error)
     throw new Error("Failed to submit form")
   }
 }

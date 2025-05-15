@@ -11,6 +11,8 @@ import { submitAnalysisForm } from "../actions/submit-form"
 
 export function AnalysisForm() {
   const [open, setOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [formSubmitted, setFormSubmitted] = useState(false)
 
   const marketingGoals = ["More Traffic", "More Conversions", "More Social Content", "All the above"]
 
@@ -45,10 +47,23 @@ export function AnalysisForm() {
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const formData = new FormData(event.currentTarget)
-    formData.delete("services")
-    await submitAnalysisForm(formData)
-    setOpen(false)
+    setIsSubmitting(true)
+
+    try {
+      const formData = new FormData(event.currentTarget)
+      await submitAnalysisForm(formData)
+      setFormSubmitted(true)
+
+      // Reset form after 3 seconds and close dialog
+      setTimeout(() => {
+        setOpen(false)
+        setFormSubmitted(false)
+      }, 3000)
+    } catch (error) {
+      console.error("Form submission error:", error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -72,62 +87,70 @@ export function AnalysisForm() {
             </DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={onSubmit} className="space-y-6 pt-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Name*</label>
-              <Input name="name" placeholder="Your name" required />
+          {formSubmitted ? (
+            <div className="py-8 text-center">
+              <h3 className="text-xl font-medium text-green-600 mb-2">Thank You!</h3>
+              <p className="text-gray-600">Your information has been submitted successfully.</p>
+              <p className="text-gray-600">We'll be in touch soon!</p>
             </div>
+          ) : (
+            <form onSubmit={onSubmit} method="POST" className="space-y-6 pt-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Name*</label>
+                <Input name="name" placeholder="Your name" required />
+              </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Email*</label>
-              <Input name="email" type="email" placeholder="Your email" required />
-            </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Email*</label>
+                <Input name="email" type="email" placeholder="Your email" required />
+              </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">What are your Marketplace goals?*</label>
-              <Select name="marketingGoals" required>
-                <SelectTrigger className="bg-white text-black border border-gray-300 shadow-md">
-                  <SelectValue placeholder="Choose one.." />
-                </SelectTrigger>
-                <SelectContent className="bg-white text-black border border-gray-300 shadow-md">
-                  {marketingGoals.map((goal) => (
-                    <SelectItem key={goal} value={goal}>
-                      {goal}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">What are your Marketplace goals?*</label>
+                <Select name="marketingGoals" required>
+                  <SelectTrigger className="bg-white text-black border border-gray-300 shadow-md">
+                    <SelectValue placeholder="Choose one.." />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white text-black border border-gray-300 shadow-md">
+                    {marketingGoals.map((goal) => (
+                      <SelectItem key={goal} value={goal}>
+                        {goal}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Brand Website*</label>
-              <Input name="website" placeholder="https://" required />
-            </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Brand Website*</label>
+                <Input name="website" placeholder="https://" required />
+              </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Brand Category*</label>
-              <Select name="category" required>
-                <SelectTrigger className="bg-white text-black border border-gray-300 shadow-md">
-                  <SelectValue placeholder="Choose one.." />
-                </SelectTrigger>
-                <SelectContent className="bg-white text-black border border-gray-300 shadow-md">
-                  {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Brand Category*</label>
+                <Select name="category" required>
+                  <SelectTrigger className="bg-white text-black border border-gray-300 shadow-md">
+                    <SelectValue placeholder="Choose one.." />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white text-black border border-gray-300 shadow-md">
+                    {categories.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90">
-              Let's Go!
-            </Button>
+              <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isSubmitting}>
+                {isSubmitting ? "Submitting..." : "Let's Go!"}
+              </Button>
 
-            <div className="text-center">
-              <p className="text-xs text-muted-foreground">*Required</p>
-            </div>
-          </form>
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">*Required</p>
+              </div>
+            </form>
+          )}
         </DialogContent>
       </Dialog>
     </>
